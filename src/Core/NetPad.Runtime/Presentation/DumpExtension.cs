@@ -28,7 +28,7 @@ public static class DumpExtension
     [return: System.Diagnostics.CodeAnalysis.NotNullIfNotNull("o")]
     public static T? Dump<T>(this T? o, string? title = null, string? css = null, string? code = null, int? clear = null)
     {
-        Sink.ResultWrite(o, new DumpOptions(
+        WriteResult(o, new DumpOptions(
             Title: title,
             CssClasses: css,
             CodeType: code,
@@ -43,14 +43,15 @@ public static class DumpExtension
     /// </summary>
     /// <param name="span">The <see cref="Span{T}"/> to dump.</param>
     /// <param name="title">An optional title for the result.</param>
-    /// <param name="cssClasses">If specified, will be added as CSS classes to the result.</param>
+    /// <param name="css">If specified, will be added as CSS classes to the result.</param>
     /// <param name="clear">If specified, will remove the result after specified milliseconds.</param>
     /// <returns>The <see cref="Span{T}"/> being dumped.</returns>
-    public static Span<T> Dump<T>(this Span<T> span, string? title = null, string? cssClasses = null, int? clear = null)
+    public static Span<T> Dump<T>(this Span<T> span, string? title = null, string? css = null, int? clear = null)
     {
-        Sink.ResultWrite(span.ToArray(), new DumpOptions(
+        WriteResult(span.ToArray(), new DumpOptions(
             Title: title,
-            CssClasses: cssClasses
+            CssClasses: css,
+            DestructAfterMs: clear
         ));
         return span;
     }
@@ -60,15 +61,26 @@ public static class DumpExtension
     /// </summary>
     /// <param name="span">The <see cref="ReadOnlySpan{T}"/> to dump.</param>
     /// <param name="title">An optional title for the result.</param>
-    /// <param name="cssClasses">If specified, will be added as CSS classes to the result.</param>
+    /// <param name="css">If specified, will be added as CSS classes to the result.</param>
     /// <param name="clear">If specified, will remove the result after specified milliseconds.</param>
     /// <returns>The <see cref="ReadOnlySpan{T}"/> being dumped.</returns>
-    public static ReadOnlySpan<T> Dump<T>(this ReadOnlySpan<T> span, string? title = null, string? cssClasses = null, int? clear = null)
+    public static ReadOnlySpan<T> Dump<T>(this ReadOnlySpan<T> span, string? title = null, string? css = null, int? clear = null)
     {
-        Sink.ResultWrite(span.ToArray(), new DumpOptions(
+        WriteResult(span.ToArray(), new DumpOptions(
             Title: title,
-            CssClasses: cssClasses
+            CssClasses: css,
+            DestructAfterMs: clear
         ));
         return span;
+    }
+
+    public static void WriteResult<T>(T? o, DumpOptions options)
+    {
+        Sink.ResultWrite(o, options);
+    }
+
+    public static void WriteSql<T>(T? o, DumpOptions options)
+    {
+        Sink.SqlWrite(o, options);
     }
 }

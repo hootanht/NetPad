@@ -22,7 +22,7 @@ public static class ProcessUtil
         return process.WasProcessStarted() && !process.HasExited;
     }
 
-    public static void OpenInDesktopExplorer(string path)
+    public static void OpenWithDefaultApp(string path)
     {
         using var p = Process.Start(new ProcessStartInfo
         {

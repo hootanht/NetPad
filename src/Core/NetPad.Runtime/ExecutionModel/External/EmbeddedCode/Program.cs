@@ -13,13 +13,10 @@ using NetPad.Presentation;
 /// </summary>
 public partial class Program
 {
-    public static readonly UserScript UserScript = new(
-        new Guid("SCRIPT_ID"),
-        "SCRIPT_NAME",
-        "SCRIPT_LOCATION");
-
     static Program()
     {
+        Util.Init("SCRIPT_NAME", "SCRIPT_LOCATION");
+
         var args = Environment.GetCommandLineArgs();
 
         if (args.Contains("-help"))
@@ -31,7 +28,8 @@ public partial class Program
             Environment.Exit(0);
         }
 
-        TerminateProcessOnParentExit(args);
+        int parentProcessId = TerminateProcessOnParentExit(args);
+        Util.ParentProcessID = parentProcessId;
 
         if (args.Contains("-html"))
         {
@@ -58,6 +56,8 @@ public partial class Program
         {
             NetPad.Utilities.WindowsNative.DisableWindowsErrorReporting();
         }
+
+        Util.ScriptStopwatch.Start();
     }
 
     private static void PrintHelp()
@@ -68,7 +68,7 @@ public partial class Program
             currentAssemblyPath = "." + currentAssemblyPath.Replace(Environment.CurrentDirectory, string.Empty);
         }
 
-        Console.WriteLine($"{UserScript.Name}");
+        Console.WriteLine($"{Util.CurrentScript.Name}");
         Console.WriteLine($@"
 Usage:
     dotnet {currentAssemblyPath} [-console|-text|-html] [OPTIONS]
@@ -85,21 +85,21 @@ Options:
 ");
     }
 
-    private static void TerminateProcessOnParentExit(string[] args)
+    private static int TerminateProcessOnParentExit(string[] args)
     {
         var parentIx = Array.IndexOf(args, "-parent");
 
         if (parentIx < 0)
         {
             // No parent
-            return;
+            return -1;
         }
 
         if (args.Length < parentIx + 1 || !int.TryParse(args[parentIx + 1], out var parentProcessId))
         {
             Console.Error.WriteLine("Invalid parent process ID");
             Environment.Exit(1);
-            return;
+            return -1;
         }
 
         Process? parentProcess = null;
@@ -123,5 +123,7 @@ Options:
             Console.Error.WriteLine($"Parent process {parentProcessId} is not running");
             Environment.Exit(1);
         }
+
+        return parentProcessId;
     }
 }
