@@ -1,7 +1,7 @@
 import {DI, ILogger} from "aurelia";
 import {IHydratedController, watch} from "@aurelia/runtime-html";
 import * as monaco from "monaco-editor";
-import {WithDisposables} from "@common";
+import {Util, WithDisposables} from "@common";
 import {IEventBus, MonacoEditorUtil, Settings, ViewModelBase} from "@application";
 import {TextEditorFocusedEvent} from "./events";
 import {TextDocument} from "./text-document";
@@ -146,9 +146,7 @@ export class TextEditor extends ViewModelBase implements ITextEditor {
         });
     }
 
-    private updateEditorLayout() {
-        this.monaco.layout();
-    }
+    private updateEditorLayout = Util.debounce(this, () => this.monaco.layout(), 200, true);
 
     @watch<TextEditor>(vm => vm.settings.appearance.theme)
     @watch<TextEditor>(vm => vm.settings.editor.monacoOptions)

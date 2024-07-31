@@ -1,6 +1,13 @@
 import {watch} from "@aurelia/runtime-html";
-import {DatabaseConnection, DataConnection, DataConnectionType, IDataConnectionService,} from "@application";
+import {
+    DatabaseConnection,
+    DataConnection,
+    DataConnectionType,
+    IDataConnectionService,
+    IWindowService,
+} from "@application";
 import {WindowBase} from "@application/windows/window-base";
+import {WindowParams} from "@application/windows/window-params";
 import {System, Util} from "@common";
 import {IDataConnectionView} from "./connection-views/idata-connection-view";
 import {MssqlView} from "./connection-views/mssql/mssql-view";
@@ -19,8 +26,9 @@ export class Window extends WindowBase {
     private nameField: HTMLInputElement;
 
     constructor(
-        private readonly startupOptions: URLSearchParams,
-        @IDataConnectionService private readonly dataConnectionService: IDataConnectionService
+        private readonly windowParams: WindowParams,
+        @IDataConnectionService private readonly dataConnectionService: IDataConnectionService,
+        @IWindowService private readonly windowService: IWindowService
     ) {
         super();
 
@@ -48,8 +56,8 @@ export class Window extends WindowBase {
     }
 
     private getStartupParams() {
-        const dataConnectionId = this.startupOptions.get("data-connection-id");
-        const copy = this.startupOptions.get("copy")?.toLowerCase() === "true";
+        const dataConnectionId = this.windowParams.get("data-connection-id");
+        const copy = this.windowParams.get("copy")?.toLowerCase() === "true";
 
         return {
             createNew: !dataConnectionId || copy,
@@ -194,7 +202,7 @@ export class Window extends WindowBase {
             }
 
             await this.dataConnectionService.save(connection);
-            window.close();
+            await this.windowService.close();
         } catch (ex) {
             const errorMsg = ex instanceof Error ? ex.toString() : "Unknown error";
             alert("Could not save the connection: " + errorMsg);
@@ -202,8 +210,8 @@ export class Window extends WindowBase {
         }
     }
 
-    public cancel() {
-        window.close();
+    public async cancel() {
+        await this.windowService.close();
     }
 
     @watch<Window>(vm => vm.connectionView?.connection.name)
