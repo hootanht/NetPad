@@ -1,0 +1,106 @@
+{
+    "name": "netpad",
+    "description": "A cross-platform C# editor and playground.",
+    "author": {
+        "name": "Tareq Imbasher",
+        "email": "tareq@meccasoft.com"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tareqimbasher/NetPad"
+    },
+    "scripts": {
+        "lint:js": "eslint src test --ext .js,.ts",
+        "lint:html": "htmlhint -c .htmlhintrc src",
+        "lint:css": "stylelint src/**/*.scss",
+        "lint": "npm run lint:js && npm run lint:html && npm run lint:css",
+        "pretest": "npm run lint",
+        "start": "webpack serve",
+        "start-web": "webpack serve --env target=web",
+        "build": "rimraf dist && webpack --env production",
+        "analyze": "rimraf dist && webpack --env production --analyze",
+        "test": "jest",
+        "precommit": "npm run lint && jest"
+    },
+    "jest": {
+        "testEnvironment": "jsdom",
+        "transform": {
+            "\\.(css|less|sass|scss|styl|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "jest-transform-stub",
+            "\\.(ts|html)$": ["@aurelia/ts-jest", { "isolatedModules": true }]
+        },
+        "moduleNameMapper": {
+            "@common/(.*)": "<rootDir>/src/core/@common/$1",
+            "@common": "<rootDir>/src/core/@common",
+            "@application/(.*)": "<rootDir>/src/core/@application/$1",
+            "@application": "<rootDir>/src/core/@application"
+        },
+        "collectCoverage": false,
+        "collectCoverageFrom": [
+            "src/**/*.ts",
+            "!src/**/*.d.ts"
+        ]
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^6.4.0",
+        "@microsoft/signalr": "^6.0.7",
+        "@popperjs/core": "^2.11.5",
+        "aurelia": "2.0.0-beta.14",
+        "bootstrap": "^5.2.3",
+        "dragula": "^3.7.3",
+        "electron": "^23.3.13",
+        "exceljs": "^4.3.0",
+        "highlight.js": "^11.9.0",
+        "monaco-editor": "^0.39.0",
+        "monaco-themes": "^0.4.4",
+        "path-browserify": "^1.0.1",
+        "sanitize-html": "^2.12.1",
+        "split.js": "^1.6.5",
+        "monaco-vim": "^0.1.0"
+    },
+    "devDependencies": {
+        "@aurelia/dialog": "2.0.0-beta.14",
+        "@aurelia/testing": "2.0.0-beta.14",
+        "@aurelia/ts-jest": "2.0.0-beta.14",
+        "@aurelia/webpack-loader": "2.0.0-beta.14",
+        "@types/bootstrap": "^5.2.8",
+        "@types/dragula": "^3.7.1",
+        "@types/highlight.js": "^10.1.0",
+        "@types/jest": "^29.5.3",
+        "@types/node": "^18.11.18",
+        "@types/sanitize-html": "^2.6.2",
+        "@types/webpack-env": "^1.17.0",
+        "@typescript-eslint/eslint-plugin": "^6.4.0",
+        "@typescript-eslint/parser": "^6.4.0",
+        "autoprefixer": "^10.4.8",
+        "css-loader": "^6.7.1",
+        "dotenv-webpack": "^8.0.0",
+        "electron-builder": "^24.13.3",
+        "eslint": "^8.47.0",
+        "html-webpack-plugin": "^5.5.0",
+        "htmlhint": "^1.1.4",
+        "jest": "^29.6.2",
+        "jest-environment-jsdom": "^29.6.2",
+        "jest-transform-stub": "^2.0.0",
+        "monaco-editor-webpack-plugin": "^7.0.1",
+        "postcss": "^8.4.31",
+        "postcss-loader": "^7.0.1",
+        "rimraf": "^3.0.2",
+        "sass": "^1.54.0",
+        "sass-loader": "^13.0.2",
+        "start-server-and-test": "^2.0.3",
+        "style-loader": "^3.3.1",
+        "stylelint": "^14.9.1",
+        "stylelint-config-standard-scss": "^5.0.0",
+        "ts-loader": "^9.4.2",
+        "tslib": "^2.6.1",
+        "typescript": "^5.4.5",
+        "webpack": "^5.76.0",
+        "webpack-bundle-analyzer": "^4.5.0",
+        "webpack-cli": "^4.10.0",
+        "webpack-dev-server": "^4.9.3"
+    },
+    "devDependenciesComments": {
+        "electron-builder": "Only installed for the TS type definitions to be used in 'electron.manifest.js' in proj root"
+    }
+}

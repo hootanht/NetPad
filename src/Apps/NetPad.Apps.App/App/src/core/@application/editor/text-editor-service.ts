@@ -30,4 +30,16 @@ export class TextEditorService implements ITextEditorService {
 
         return editor;
     }
+
+    public enableVimMode(): void {
+        if (this._active) {
+            this._active.enableVimMode();
+        }
+    }
+
+    public disableVimMode(): void {
+        if (this._active) {
+            this._active.disableVimMode();
+        }
+    }
 }
